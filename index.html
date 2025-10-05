@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <!-- Game Design Style css -->
+    <style>
+        body {
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .game {
+            margin-right: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h2 {
+            margin-left: 50px;
+        }
+
+        #game-board {
+            width: 200px;
+            height: 200px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin: 0 auto;
+            margin-right: 655px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            background-color: #46464696;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-family: sf-medium;
+            cursor: pointer;
+        }
+
+        #reset-btn {
+            background-color: #3632ff;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            margin-top: 150px;
+            margin-left: 50px;
+        }
+
+        #reset-btn:hover {
+            background-color: #0400ff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!--Game section in html-->>
+    <div class="game">
+        <h2>Tic Tac Toe</h2>
+        <div id="game-board"></div>
+        <button id="reset-btn">Reset Game</button>
+    </div>
+     <!--Game Script-->>
+    <script>
+          // Define main DOM elements and game variables
+        const Board = document.querySelector("#game-board");
+        const resetBtn = document.querySelector("#reset-btn");
+        let ticTacToeState = Array(9).fill("");
+        let currentPlayer = "X";
+        // Check the board for a winner or a draw
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            for (let i = 0; i < winPatterns.length; i++) {
+                let a = winPatterns[i][0];
+                let b = winPatterns[i][1];
+                let c = winPatterns[i][2];
+
+                if (ticTacToeState[a] !== "" &&
+                    ticTacToeState[a] === ticTacToeState[b] &&
+                    ticTacToeState[a] === ticTacToeState[c]) {
+
+                    return ticTacToeState[a];
+                }
+            }
+
+            for (let j = 0; j < ticTacToeState.length; j++) {
+                if (ticTacToeState[j] === "") {
+                    return null;
+                }
+            }
+
+            return "draw";
+        }
+        // Resets the game board and score
+        function Reset() {
+            ticTacToeState = Array(9).fill("");
+            currentPlayer = "X";
+            Render();
+        }
+        // Draws the game board and refreshes it whenever something changes
+
+        function Render() {
+            Board.innerHTML = "";
+
+            for (let cellIndex = 0; cellIndex < ticTacToeState.length; cellIndex++) {
+                let cellValue = ticTacToeState[cellIndex];
+
+                let cell = document.createElement("div");
+                cell.className = "cell";
+                cell.textContent = cellValue;
+
+                cell.addEventListener("click", function () {
+                    if (cellValue === "" && !checkWinner()) {
+
+                        ticTacToeState[cellIndex] = currentPlayer;
+
+                        if (currentPlayer === "X") {
+                            currentPlayer = "O";
+                        } else {
+                            currentPlayer = "X";
+                        }
+
+                        Render();
+
+                        let winner = checkWinner();
+                        if (winner === "draw") {
+                            alert("Game is a draw!");
+                        } else if (winner) {
+                            alert("Player " + winner + " wins!");
+                        }
+                    }
+                });
+
+                Board.appendChild(cell);
+            }
+        }
+
+        //Restart Game Logic
+        resetBtn.addEventListener("click", () => {
+            Reset();
+        });
+        Reset();
+    </script>
+</body>
+
+</html>
